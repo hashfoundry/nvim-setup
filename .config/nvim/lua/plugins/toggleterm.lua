@@ -1,15 +1,46 @@
 -- ~/.config/nvim/lua/plugins/toggleterm.lua
 -- Toggleterm.nvim configuration for terminal management
 
+-- Function to check if Avante sidebar is open
+local function is_avante_open()
+  -- Check if any buffer has avante filetype
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) then
+      local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
+      if ft == 'Avante' or ft == 'AvanteInput' then
+        -- Check if the buffer is displayed in any window
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          if vim.api.nvim_win_get_buf(win) == buf then
+            return true
+          end
+        end
+      end
+    end
+  end
+  return false
+end
+
+-- Dynamic size calculation function
+local function get_dynamic_terminal_size(term)
+  if term.direction == "horizontal" then
+    return 15
+  elseif term.direction == "vertical" then
+    local base_width = vim.o.columns * 0.4
+    -- If Avante is open, reduce terminal width to account for Avante sidebar
+    if is_avante_open() then
+      -- Avante typically uses about 30-35 columns, so we reduce accordingly
+      local avante_width = 35
+      local available_width = vim.o.columns - avante_width
+      return math.floor(available_width * 0.4)
+    else
+      return base_width
+    end
+  end
+end
+
 require("toggleterm").setup({
   -- Main settings
-  size = function(term)
-    if term.direction == "horizontal" then
-      return 15
-    elseif term.direction == "vertical" then
-      return vim.o.columns * 0.4
-    end
-  end,
+  size = get_dynamic_terminal_size,
   open_mapping = [[<c-\>]], -- Ctrl+\ to open/close terminal
   hide_numbers = true, -- hide line numbers in terminal
   shade_filetypes = {},
@@ -77,7 +108,9 @@ local npm_terminal = Terminal:new({
   cmd = "bash",
   dir = "git_dir",
   direction = "horizontal",
-  size = 15,
+  size = function()
+    return get_dynamic_terminal_size({direction = "horizontal"})
+  end,
   on_open = function(term)
     vim.cmd("startinsert!")
     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
@@ -88,10 +121,28 @@ local npm_terminal = Terminal:new({
 local js_runner = Terminal:new({
   dir = "git_dir",
   direction = "horizontal",
-  size = 15,
+  size = function()
+    return get_dynamic_terminal_size({direction = "horizontal"})
+  end,
   on_open = function(term)
     vim.cmd("startinsert!")
     vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
+  end,
+})
+
+-- Special terminal for AI code execution (visible terminal)
+local ai_execution_terminal = Terminal:new({
+  dir = "git_dir",
+  direction = "horizontal",
+  size = function()
+    return get_dynamic_terminal_size({direction = "horizontal"})
+  end,
+  on_open = function(term)
+    vim.cmd("startinsert!")
+    vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
+  end,
+  on_close = function(term)
+    vim.cmd("startinsert!")
   end,
 })
 
@@ -106,6 +157,31 @@ end
 
 function _JS_RUNNER_TOGGLE()
   js_runner:toggle()
+end
+
+-- Function to access AI execution terminal (exported globally)
+function _AI_EXECUTION_TERMINAL_TOGGLE()
+  ai_execution_terminal:toggle()
+end
+
+-- Global function to execute code in visible terminal (for AI integration)
+function _G.execute_code_in_terminal(code, command_prefix)
+  command_prefix = command_prefix or "node"
+  ai_execution_terminal.cmd = command_prefix .. " -e \"" .. code:gsub('"', '\\"') .. "\""
+  ai_execution_terminal:toggle()
+end
+
+-- Global function to execute file in visible terminal (for AI integration)
+function _G.execute_file_in_terminal(file_path, command_prefix)
+  command_prefix = command_prefix or "node"
+  ai_execution_terminal.cmd = command_prefix .. " " .. file_path
+  ai_execution_terminal:toggle()
+end
+
+-- Global function to execute npm command in visible terminal (for AI integration)
+function _G.execute_npm_in_terminal(npm_command)
+  ai_execution_terminal.cmd = "npm " .. npm_command
+  ai_execution_terminal:toggle()
 end
 
 -- Function to execute current JavaScript file

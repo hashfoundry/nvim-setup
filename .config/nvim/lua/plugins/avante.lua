@@ -78,29 +78,25 @@ require('avante').setup({
         },
       },
       func = function(params, on_log, on_complete)
-        -- Create temporary file and execute code
+        -- Create temporary file and execute code in visible terminal
         local temp_file = vim.fn.tempname() .. ".js"
         vim.fn.writefile(vim.split(params.code, "\n"), temp_file)
         
-        -- Execute code and get result
-        local result = vim.fn.system(string.format("cd %s && node %s 2>&1", vim.fn.getcwd(), temp_file))
-        local exit_code = vim.v.shell_error
+        -- Execute in visible terminal using global function
+        vim.schedule(function()
+          execute_file_in_terminal(temp_file, "node")
+          -- Clean up temp file after a delay
+          vim.defer_fn(function()
+            vim.fn.delete(temp_file)
+          end, 1000)
+        end)
         
-        -- Delete temporary file
-        vim.fn.delete(temp_file)
-        
-        -- Format result
+        -- Return immediate feedback
         local formatted_result = string.format(
-          "=== Node.js Execution Result ===\nExit Code: %d\nOutput:\n%s\n================================",
-          exit_code,
-          result
+          "=== Node.js Code Execution ===\nCode executed in terminal below.\nCheck the terminal output for results.\n==============================="
         )
         
-        if exit_code ~= 0 then
-          return formatted_result, "Execution failed with exit code " .. exit_code
-        else
-          return formatted_result
-        end
+        return formatted_result
       end,
     },
     {
@@ -137,26 +133,21 @@ require('avante').setup({
       },
       func = function(params, on_log, on_complete)
         local args = params.args or ""
-        local cmd = string.format("cd %s && node %s %s 2>&1", vim.fn.getcwd(), params.file_path, args)
+        local file_with_args = params.file_path .. (args ~= "" and " " .. args or "")
         
-        -- Execute file
-        local result = vim.fn.system(cmd)
-        local exit_code = vim.v.shell_error
+        -- Execute file in visible terminal using global function
+        vim.schedule(function()
+          execute_file_in_terminal(file_with_args, "node")
+        end)
         
-        -- Format result
+        -- Return immediate feedback
         local formatted_result = string.format(
-          "=== Node.js File Execution Result ===\nFile: %s\nCommand: %s\nExit Code: %d\nOutput:\n%s\n=====================================",
+          "=== Node.js File Execution ===\nFile: %s\nArguments: %s\nExecuted in terminal below.\nCheck the terminal output for results.\n==================================",
           params.file_path,
-          cmd,
-          exit_code,
-          result
+          args
         )
         
-        if exit_code ~= 0 then
-          return formatted_result, "Execution failed with exit code " .. exit_code
-        else
-          return formatted_result
-        end
+        return formatted_result
       end,
     },
     {
@@ -186,25 +177,18 @@ require('avante').setup({
         },
       },
       func = function(params, on_log, on_complete)
-        local cmd = string.format("cd %s && npm %s 2>&1", vim.fn.getcwd(), params.command)
+        -- Execute npm command in visible terminal using global function
+        vim.schedule(function()
+          execute_npm_in_terminal(params.command)
+        end)
         
-        -- Execute npm command
-        local result = vim.fn.system(cmd)
-        local exit_code = vim.v.shell_error
-        
-        -- Format result
+        -- Return immediate feedback
         local formatted_result = string.format(
-          "=== NPM Command Execution Result ===\nCommand: npm %s\nExit Code: %d\nOutput:\n%s\n====================================",
-          params.command,
-          exit_code,
-          result
+          "=== NPM Command Execution ===\nCommand: npm %s\nExecuted in terminal below.\nCheck the terminal output for results.\n=================================",
+          params.command
         )
         
-        if exit_code ~= 0 then
-          return formatted_result, "NPM command failed with exit code " .. exit_code
-        else
-          return formatted_result
-        end
+        return formatted_result
       end,
     },
   },
