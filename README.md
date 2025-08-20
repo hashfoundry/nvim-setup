@@ -15,7 +15,7 @@ A modern, VS Code-like NeoVim configuration based on LazyVim with integrated AI 
 - Enhanced terminal management with ToggleTerm
 - Neo-tree file explorer with Git integration
 - Package.json management with real-time updates
-- REST client for API testing
+- Stable plugin configuration for reliable performance
 
 ### 📦 Node.js Development Tools
 - TypeScript/JavaScript enhanced support
@@ -131,10 +131,6 @@ A modern, VS Code-like NeoVim configuration based on LazyVim with integrated AI 
 - `<leader>nu` - Update package
 - `<leader>ni` - Install package
 
-#### REST Client
-- `<leader>rr` - Run REST request
-- `<leader>rp` - Preview REST request
-- `<leader>rl` - Run last REST request
 
 ## Usage Examples
 
@@ -162,27 +158,6 @@ A modern, VS Code-like NeoVim configuration based on LazyVim with integrated AI 
    - `<leader>tp` for NPM commands
    - `<C-\>` for general terminal
 
-### REST API Testing
-
-1. **Create .http files:**
-   ```http
-   GET https://api.example.com/users
-   Content-Type: application/json
-
-   ###
-
-   POST https://api.example.com/users
-   Content-Type: application/json
-
-   {
-     "name": "John Doe",
-     "email": "john@example.com"
-   }
-   ```
-
-2. **Execute requests:**
-   - Place cursor on request
-   - Press `<leader>rr` to execute
 
 ## Customization
 
@@ -281,7 +256,7 @@ vim.cmd.colorscheme("catppuccin")
 
 4. **Testing and debugging:**
    - Use `<leader>tn` for Node.js REPL
-   - Test API endpoints with REST client
+   - Use `<leader>tp` for NPM commands
    - Monitor with integrated terminal
 
 ### Git Integration
