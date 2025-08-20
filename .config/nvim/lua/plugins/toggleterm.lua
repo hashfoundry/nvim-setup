@@ -20,23 +20,65 @@ local function is_avante_open()
   return false
 end
 
+-- Function to check if NvimTree is open
+local function is_nvimtree_open()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) then
+      local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
+      if ft == 'NvimTree' then
+        -- Check if the buffer is displayed in any window
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          if vim.api.nvim_win_get_buf(win) == buf then
+            return true
+          end
+        end
+      end
+    end
+  end
+  return false
+end
+
 -- Dynamic size calculation function
 local function get_dynamic_terminal_size(term)
   if term.direction == "horizontal" then
     return 15
   elseif term.direction == "vertical" then
     local base_width = vim.o.columns * 0.4
-    -- If Avante is open, reduce terminal width to account for Avante sidebar
+    local sidebar_width = 0
+    
+    -- Check for Avante (left side)
     if is_avante_open() then
-      -- Avante typically uses about 30-35 columns, so we reduce accordingly
-      local avante_width = 35
-      local available_width = vim.o.columns - avante_width
+      sidebar_width = sidebar_width + 35  -- Avante width
+    end
+    
+    -- Check for NvimTree (left side)
+    if is_nvimtree_open() then
+      sidebar_width = sidebar_width + 30  -- NvimTree width
+    end
+    
+    if sidebar_width > 0 then
+      local available_width = vim.o.columns - sidebar_width
       return math.floor(available_width * 0.4)
     else
       return base_width
     end
   end
 end
+
+-- Function to force update terminal sizes
+local function update_terminal_sizes()
+  -- Get all terminal instances and update their sizes
+  local terminals = require('toggleterm.terminal').get_all()
+  for _, term in pairs(terminals) do
+    if term:is_open() and term.direction == "vertical" then
+      local new_size = get_dynamic_terminal_size(term)
+      vim.api.nvim_win_set_width(term.window, new_size)
+    end
+  end
+end
+
+-- Export the update function globally
+_G.update_terminal_sizes = update_terminal_sizes
 
 require("toggleterm").setup({
   -- Main settings

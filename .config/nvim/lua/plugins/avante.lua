@@ -84,11 +84,25 @@ require('avante').setup({
         
         -- Execute in visible terminal using global function
         vim.schedule(function()
-          execute_file_in_terminal(temp_file, "node")
+          -- Check if the global function exists, if not use fallback
+          if _G.execute_file_in_terminal then
+            _G.execute_file_in_terminal(temp_file, "node")
+          else
+            -- Fallback: use ToggleTerm command directly
+            vim.cmd("ToggleTerm direction=horizontal")
+            vim.defer_fn(function()
+              -- Send command to terminal
+              local term_buf = vim.api.nvim_get_current_buf()
+              if vim.api.nvim_buf_get_option(term_buf, 'buftype') == 'terminal' then
+                vim.api.nvim_chan_send(vim.b.terminal_job_id, "node " .. temp_file .. "\n")
+              end
+            end, 200)
+          end
+          
           -- Clean up temp file after a delay
           vim.defer_fn(function()
             vim.fn.delete(temp_file)
-          end, 1000)
+          end, 2000)
         end)
         
         -- Return immediate feedback
@@ -133,11 +147,24 @@ require('avante').setup({
       },
       func = function(params, on_log, on_complete)
         local args = params.args or ""
-        local file_with_args = params.file_path .. (args ~= "" and " " .. args or "")
+        local command = "node " .. params.file_path .. (args ~= "" and " " .. args or "")
         
         -- Execute file in visible terminal using global function
         vim.schedule(function()
-          execute_file_in_terminal(file_with_args, "node")
+          -- Check if the global function exists, if not use fallback
+          if _G.execute_file_in_terminal then
+            _G.execute_file_in_terminal(params.file_path .. (args ~= "" and " " .. args or ""), "node")
+          else
+            -- Fallback: use ToggleTerm command directly
+            vim.cmd("ToggleTerm direction=horizontal")
+            vim.defer_fn(function()
+              -- Send command to terminal
+              local term_buf = vim.api.nvim_get_current_buf()
+              if vim.api.nvim_buf_get_option(term_buf, 'buftype') == 'terminal' then
+                vim.api.nvim_chan_send(vim.b.terminal_job_id, command .. "\n")
+              end
+            end, 200)
+          end
         end)
         
         -- Return immediate feedback
@@ -177,9 +204,24 @@ require('avante').setup({
         },
       },
       func = function(params, on_log, on_complete)
+        local command = "npm " .. params.command
+        
         -- Execute npm command in visible terminal using global function
         vim.schedule(function()
-          execute_npm_in_terminal(params.command)
+          -- Check if the global function exists, if not use fallback
+          if _G.execute_npm_in_terminal then
+            _G.execute_npm_in_terminal(params.command)
+          else
+            -- Fallback: use ToggleTerm command directly
+            vim.cmd("ToggleTerm direction=horizontal")
+            vim.defer_fn(function()
+              -- Send command to terminal
+              local term_buf = vim.api.nvim_get_current_buf()
+              if vim.api.nvim_buf_get_option(term_buf, 'buftype') == 'terminal' then
+                vim.api.nvim_chan_send(vim.b.terminal_job_id, command .. "\n")
+              end
+            end, 200)
+          end
         end)
         
         -- Return immediate feedback
@@ -195,7 +237,7 @@ require('avante').setup({
 
   -- Window settings
   windows = {
-    position = "right",
+    position = "left",
     wrap = true,
     width = 30,
     sidebar_header = {
@@ -264,12 +306,41 @@ require('avante').setup({
   },
 })
 
+-- Function to close NvimTree if open
+local function close_nvimtree_if_open()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_valid(buf) then
+      local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
+      if ft == 'NvimTree' then
+        vim.cmd('NvimTreeClose')
+        return true
+      end
+    end
+  end
+  return false
+end
+
+-- Custom toggle function that handles nvim-tree interaction
+local function avante_toggle_with_nvimtree()
+  -- Close nvim-tree if it's open
+  close_nvimtree_if_open()
+  
+  -- Small delay to ensure nvim-tree is closed before opening avante
+  vim.defer_fn(function()
+    require("avante").toggle()
+    -- Update terminal sizes after avante toggle
+    if _G.update_terminal_sizes then
+      vim.defer_fn(_G.update_terminal_sizes, 100)
+    end
+  end, 50)
+end
+
 -- Additional keymaps for avante
 vim.keymap.set("n", "<leader>aa", function() require("avante.api").ask() end, { desc = "avante: ask" })
 vim.keymap.set("v", "<leader>aa", function() require("avante.api").ask() end, { desc = "avante: ask" })
 vim.keymap.set("n", "<leader>ar", function() require("avante.api").refresh() end, { desc = "avante: refresh" })
 vim.keymap.set("n", "<leader>ae", function() require("avante.api").edit() end, { desc = "avante: edit" })
-vim.keymap.set("n", "<leader>at", function() require("avante").toggle() end, { desc = "avante: toggle" })
+vim.keymap.set("n", "<leader>at", avante_toggle_with_nvimtree, { desc = "avante: toggle" })
 
 -- Commands for quick access
 vim.api.nvim_create_user_command("AvanteAsk", function()
