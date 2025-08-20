@@ -1,0 +1,43 @@
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*~
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.bak
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Rust
+target/
+Cargo.lock
+
+# Local settings
+.env
+.env.local
+.env.*.local
+
+# Archives
+*.tar.gz
+*.zip
+*.rar
+
+# Documentation (except README)
+docs/build/
