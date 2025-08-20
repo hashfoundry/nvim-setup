@@ -45,7 +45,7 @@ require('avante').setup({
     auto_apply_diff_after_generation = false,
     support_paste_from_clipboard = false,
     minimize_diff = true,
-    enable_token_counting = true,
+    enable_token_counting = false, -- Disabled to prevent buffer access errors
     auto_approve_tool_permissions = {"bash", "run_node_code", "run_node_file", "run_npm_command"}, -- Automatically approve code execution
   },
 
@@ -306,33 +306,50 @@ require('avante').setup({
   },
 })
 
--- Function to close NvimTree if open
+-- Function to close NvimTree if open with better error handling
 local function close_nvimtree_if_open()
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_valid(buf) then
-      local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
-      if ft == 'NvimTree' then
-        vim.cmd('NvimTreeClose')
-        return true
+  local success, result = pcall(function()
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_is_valid(buf) then
+        local ok, ft = pcall(vim.api.nvim_buf_get_option, buf, 'filetype')
+        if ok and ft == 'NvimTree' then
+          vim.cmd('NvimTreeClose')
+          return true
+        end
       end
     end
+    return false
+  end)
+  
+  if not success then
+    vim.notify("Warning: Error while closing NvimTree: " .. tostring(result), vim.log.levels.WARN)
+    return false
   end
-  return false
+  
+  return result
 end
 
--- Custom toggle function that handles nvim-tree interaction
+-- Custom toggle function that handles nvim-tree interaction with improved error handling
 local function avante_toggle_with_nvimtree()
   -- Close nvim-tree if it's open
   close_nvimtree_if_open()
   
-  -- Small delay to ensure nvim-tree is closed before opening avante
+  -- Longer delay to ensure nvim-tree is fully closed before opening avante
   vim.defer_fn(function()
-    require("avante").toggle()
+    local success, err = pcall(function()
+      require("avante").toggle()
+    end)
+    
+    if not success then
+      vim.notify("Error toggling Avante: " .. tostring(err), vim.log.levels.ERROR)
+      return
+    end
+    
     -- Update terminal sizes after avante toggle
     if _G.update_terminal_sizes then
-      vim.defer_fn(_G.update_terminal_sizes, 100)
+      vim.defer_fn(_G.update_terminal_sizes, 150)
     end
-  end, 50)
+  end, 100) -- Increased delay from 50ms to 100ms
 end
 
 -- Additional keymaps for avante
