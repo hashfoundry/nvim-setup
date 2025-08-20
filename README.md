@@ -1,149 +1,288 @@
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/292349/213446185-2db63fd5-8c84-459c-9f04-e286382d6e80.png">
-</div>
+# NeoVim LazyVim Configuration with AI Assistant
 
-<hr>
+A modern, VS Code-like NeoVim configuration based on LazyVim with integrated AI assistant for Node.js development.
 
-<h4 align="center">
-  <a href="https://lazyvim.github.io/installation">Install</a>
-  ·
-  <a href="https://lazyvim.github.io/configuration">Configure</a>
-  ·
-  <a href="https://lazyvim.github.io">Docs</a>
-</h4>
+## Features
 
-<div align="center"><p>
-    <a href="https://github.com/LazyVim/LazyVim/releases/latest">
-      <img alt="Latest release" src="https://img.shields.io/github/v/release/LazyVim/LazyVim?style=for-the-badge&logo=starship&color=C9CBFF&logoColor=D9E0EE&labelColor=302D41&include_prerelease&sort=semver" />
-    </a>
-    <a href="https://github.com/LazyVim/LazyVim/pulse">
-      <img alt="Last commit" src="https://img.shields.io/github/last-commit/LazyVim/LazyVim?style=for-the-badge&logo=starship&color=8bd5ca&logoColor=D9E0EE&labelColor=302D41"/>
-    </a>
-    <a href="https://github.com/LazyVim/LazyVim/blob/main/LICENSE">
-      <img alt="License" src="https://img.shields.io/github/license/LazyVim/LazyVim?style=for-the-badge&logo=starship&color=ee999f&logoColor=D9E0EE&labelColor=302D41" />
-    </a>
-    <a href="https://github.com/LazyVim/LazyVim/stargazers">
-      <img alt="Stars" src="https://img.shields.io/github/stars/LazyVim/LazyVim?style=for-the-badge&logo=starship&color=c69ff5&logoColor=D9E0EE&labelColor=302D41" />
-    </a>
-    <a href="https://github.com/LazyVim/LazyVim/issues">
-      <img alt="Issues" src="https://img.shields.io/github/issues/LazyVim/LazyVim?style=for-the-badge&logo=bilibili&color=F5E0DC&logoColor=D9E0EE&labelColor=302D41" />
-    </a>
-    <a href="https://github.com/LazyVim/LazyVim">
-      <img alt="Repo Size" src="https://img.shields.io/github/repo-size/LazyVim/LazyVim?color=%23DDB6F2&label=SIZE&logo=codesandbox&style=for-the-badge&logoColor=D9E0EE&labelColor=302D41" />
-    </a>
-    <a href="https://twitter.com/intent/follow?screen_name=folke">
-      <img alt="follow on Twitter" src="https://img.shields.io/twitter/follow/folke?style=for-the-badge&logo=twitter&color=8aadf3&logoColor=D9E0EE&labelColor=302D41" />
-    </a>
-</div>
+### 🤖 AI Assistant Integration
+- **Avante.nvim** with OpenRouter API support
+- Custom tools for Node.js code execution
+- Agentic mode for advanced AI interactions
+- Real-time code execution in visible terminals
 
-LazyVim is a Neovim setup powered by [💤 lazy.nvim](https://github.com/folke/lazy.nvim)
-to make it easy to customize and extend your config.
-Rather than having to choose between starting from scratch or using a
-pre-made distro, LazyVim offers the best of both worlds - the flexibility
-to tweak your config as needed, along with the convenience of a pre-configured setup.
+### 🚀 Modern Development Environment
+- **LazyVim** base configuration for VS Code-like experience
+- Enhanced terminal management with ToggleTerm
+- Neo-tree file explorer with Git integration
+- Package.json management with real-time updates
+- Stable plugin configuration for reliable performance
 
-![image](https://user-images.githubusercontent.com/292349/211285846-0b7bb3bf-0462-4029-b64c-4ee1d037fc1c.png)
+### 📦 Node.js Development Tools
+- TypeScript/JavaScript enhanced support
+- NPM package management
+- Node.js REPL integration
+- Specialized terminals for different tasks
+- LSP support with Mason
 
-![image](https://user-images.githubusercontent.com/292349/213447056-92290767-ea16-430c-8727-ce994c93e9cc.png)
+### 🎨 Beautiful Interface
+- Modern UI with clean design
+- Git status indicators
+- Syntax highlighting with Treesitter
+- Customizable themes and layouts
+- Smooth panel transitions
 
-## ✨ Features
+## Project Structure
 
-- 🔥 Transform your Neovim into a full-fledged IDE
-- 💤 Easily customize and extend your config with [lazy.nvim](https://github.com/folke/lazy.nvim)
-- 🚀 Blazingly fast
-- 🧹 Sane default settings for options, autocmds, and keymaps
-- 📦 Comes with a wealth of plugins pre-configured and ready to use
-
-## ⚡️ Requirements
-
-- Neovim >= **0.9.0** (needs to be built with **LuaJIT**)
-- Git >= **2.19.0** (for partial clones support)
-- a [Nerd Font](https://www.nerdfonts.com/) **_(optional)_**
-- a **C** compiler for `nvim-treesitter`. See [here](https://github.com/nvim-treesitter/nvim-treesitter#requirements)
-
-## 🚀 Getting Started
-
-You can find a starter template for **LazyVim** [here](https://github.com/LazyVim/starter)
-
-<details><summary>Try it with Docker</summary>
-
-```sh
-docker run -w /root -it --rm alpine:edge sh -uelic '
-  apk add git lazygit fzf curl neovim ripgrep alpine-sdk --update
-  git clone https://github.com/LazyVim/starter ~/.config/nvim
-  cd ~/.config/nvim
-  nvim
-'
+```
+.config/nvim/
+├── init.lua                    # Main configuration entry point
+├── lua/
+│   ├── config/
+│   │   ├── autocmds.lua       # Auto commands
+│   │   ├── keymaps.lua        # Key mappings
+│   │   ├── lazy.lua           # Lazy.nvim plugin manager setup
+│   │   └── options.lua        # NeoVim options
+│   └── plugins/
+│       ├── avante.lua         # AI assistant configuration
+│       └── nodejs.lua         # Node.js development plugins
+├── .gitignore                 # LazyVim gitignore
+├── .neoconf.json             # Project-specific settings
+└── stylua.toml               # Lua formatter configuration
 ```
 
-</details>
+## Installation
 
-<details><summary>Install the <a href="https://github.com/LazyVim/starter">LazyVim Starter</a></summary>
+### Prerequisites
 
-- Make a backup of your current Neovim files:
+- NeoVim 0.9.0+
+- Node.js 18+
+- Git
+- A terminal with true color support
+- OpenRouter API key
 
-  ```sh
-  mv ~/.config/nvim ~/.config/nvim.bak
-  mv ~/.local/share/nvim ~/.local/share/nvim.bak
-  ```
+### Quick Setup
 
-- Clone the starter
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/hashfoundry/nvim-setup.git
+   cd nvim-setup
+   ```
 
-  ```sh
-  git clone https://github.com/LazyVim/starter ~/.config/nvim
-  ```
+2. **Install on Ubuntu Server:**
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
 
-- Remove the `.git` folder, so you can add it to your own repo later
+3. **Manual installation:**
+   ```bash
+   # Backup existing config
+   mv ~/.config/nvim ~/.config/nvim.backup
 
-  ```sh
-  rm -rf ~/.config/nvim/.git
-  ```
+   # Copy configuration
+   cp -r .config/nvim ~/.config/
 
-- Start Neovim!
+   # Set OpenRouter API key
+   export OPENROUTER_API_KEY="your-api-key-here"
+   ```
 
-  ```sh
-  nvim
-  ```
+4. **First launch:**
+   ```bash
+   nvim
+   ```
+   LazyVim will automatically install all plugins on first launch.
 
-  Refer to the comments in the files on how to customize **LazyVim**.
+## Configuration
 
-</details>
+### OpenRouter API Setup
+
+1. Get your API key from [OpenRouter](https://openrouter.ai/)
+2. Set the environment variable:
+   ```bash
+   export OPENROUTER_API_KEY="your-api-key-here"
+   ```
+3. Add to your shell profile for persistence:
+   ```bash
+   echo 'export OPENROUTER_API_KEY="your-api-key-here"' >> ~/.bashrc
+   ```
+
+### Key Mappings
+
+#### AI Assistant (Avante)
+- `<leader>aa` - Ask AI assistant
+- `<leader>ar` - Refresh AI response
+- `<leader>ae` - Edit with AI
+- `<leader>at` - Toggle AI sidebar
+
+#### File Management
+- `<leader>e` - Toggle Neo-tree file explorer
+- `<leader>o` - Focus Neo-tree
+- `<leader>ff` - Find files (Telescope)
+- `<leader>fg` - Live grep (Telescope)
+
+#### Terminal Management
+- `<C-\>` - Toggle floating terminal
+- `<leader>tn` - Toggle Node.js REPL
+- `<leader>tp` - Toggle NPM terminal
+
+#### Package Management
+- `<leader>ns` - Show package info
+- `<leader>nt` - Toggle package info
+- `<leader>nu` - Update package
+- `<leader>ni` - Install package
+
+
+## Usage Examples
+
+### AI-Assisted Development
+
+1. **Ask AI for help:**
+   - Select code and press `<leader>aa`
+   - Type your question or request
+   - AI will analyze and provide suggestions
+
+2. **Execute Node.js code:**
+   - AI can run code snippets directly in terminal
+   - Results appear in visible terminal window
+   - Supports npm commands and file execution
+
+### Node.js Development
+
+1. **Package management:**
+   - Open package.json
+   - Use `<leader>ns` to see package information
+   - Use `<leader>nu` to update packages
+
+2. **Terminal workflows:**
+   - `<leader>tn` for Node.js REPL
+   - `<leader>tp` for NPM commands
+   - `<C-\>` for general terminal
+
+
+## Customization
+
+### Adding New Plugins
+
+Create new files in `lua/plugins/` directory:
+
+```lua
+-- lua/plugins/my-plugin.lua
+return {
+  "author/plugin-name",
+  opts = {
+    -- plugin configuration
+  },
+  config = function(_, opts)
+    require("plugin-name").setup(opts)
+  end,
+}
+```
+
+### Modifying AI Configuration
+
+Edit `lua/plugins/avante.lua` to:
+- Change AI model
+- Add custom tools
+- Modify UI settings
+- Update key mappings
+
+### Theme Customization
+
+LazyVim comes with multiple themes. Change in `lua/config/options.lua`:
+
+```lua
+vim.cmd.colorscheme("tokyonight")
+-- or
+vim.cmd.colorscheme("catppuccin")
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **AI Assistant not working:**
+   - Check OpenRouter API key is set
+   - Verify internet connection
+   - Check `:checkhealth avante`
+
+2. **Plugins not loading:**
+   - Run `:Lazy sync` to update plugins
+   - Check `:Lazy health` for issues
+   - Restart NeoVim
+
+3. **LSP not working:**
+   - Run `:Mason` to install language servers
+   - Check `:LspInfo` for status
+   - Verify Node.js is installed
+
+4. **Terminal issues:**
+   - Check shell configuration
+   - Verify terminal supports true colors
+   - Try different terminal direction
+
+### Performance Optimization
+
+1. **Disable unused features:**
+   ```lua
+   -- In lua/config/options.lua
+   vim.opt.backup = false
+   vim.opt.swapfile = false
+   ```
+
+2. **Lazy load plugins:**
+   ```lua
+   -- In plugin configurations
+   lazy = true,
+   event = "VeryLazy",
+   ```
+
+## Development Workflow
+
+### Typical Session
+
+1. **Start NeoVim:**
+   ```bash
+   nvim
+   ```
+
+2. **Open project:**
+   - `<leader>e` to open file explorer
+   - Navigate and open files
+
+3. **AI-assisted coding:**
+   - Select code, press `<leader>aa`
+   - Ask for improvements or explanations
+   - Let AI execute code snippets
+
+4. **Testing and debugging:**
+   - Use `<leader>tn` for Node.js REPL
+   - Use `<leader>tp` for NPM commands
+   - Monitor with integrated terminal
+
+### Git Integration
+
+- Git status in file explorer
+- Git signs in editor
+- Use `:Git` commands or external terminal
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This configuration is open source and available under the MIT License.
+
+## Support
+
+- Create issues on GitHub for bugs
+- Check LazyVim documentation for base features
+- Consult Avante.nvim docs for AI features
 
 ---
 
-There's a great video created by [@elijahmanor](https://github.com/elijahmanor) with a walkthrough to get started.
-
-[![Watch the video](https://img.youtube.com/vi/N93cTbtLCIM/hqdefault.jpg)](https://www.youtube.com/watch?v=N93cTbtLCIM)
-
-[@dusty-phillips](https://github.com/dusty-phillips) wrote a comprehensive book called
-[LazyVim for Ambitious Developers](https://lazyvim-ambitious-devs.phillips.codes)
-available for free online.
-
-## 📂 File Structure
-
-The files under config will be automatically loaded at the appropriate time,
-so you don't need to require those files manually.
-**LazyVim** comes with a set of default config files that will be loaded
-**_before_** your own. See [here](https://github.com/LazyVim/LazyVim/tree/main/lua/lazyvim/config)
-
-You can add your custom plugin specs under `lua/plugins/`. All files there
-will be automatically loaded by [lazy.nvim](https://github.com/folke/lazy.nvim)
-
-<pre>
-~/.config/nvim
-├── lua
-│   ├── config
-│   │   ├── autocmds.lua
-│   │   ├── keymaps.lua
-│   │   ├── lazy.lua
-│   │   └── options.lua
-│   └── plugins
-│       ├── spec1.lua
-│       ├── **
-│       └── spec2.lua
-└── init.lua
-</pre>
-
-## ⚙️ Configuration
-
-Refer to the [docs](https://lazyvim.github.io)
+**Note:** This configuration is optimized for Node.js development but can be easily extended for other languages by adding appropriate plugins and LSP configurations.
