@@ -1,205 +1,294 @@
-# Neovim configuration in Lua
+# NeoVim LazyVim Configuration with AI Assistant
 
-Complete NeoVim configuration in Lua, focused on productivity and simplicity for Node.js development.
+A modern, VS Code-like NeoVim configuration based on LazyVim with integrated AI assistant for Node.js development.
 
 ## Features
 
-- 🔧 **LSP Support** - TypeScript, JavaScript, JSON, HTML, CSS
-- 📝 **Autocompletion** - nvim-cmp with LSP integration
-- 🌳 **Syntax Highlighting** - Treesitter
-- 📁 **File Manager** - nvim-tree
-- 🔍 **File Search** - Telescope
-- 🔀 **Git Integration** - Gitsigns
-- 📊 **Status Line** - Lualine
-- 🖥️ **Terminal Management** - ToggleTerm
-- 🎨 **Theme** - Tokyo Night
+### 🤖 AI Assistant Integration
+- **Avante.nvim** with OpenRouter API support
+- Custom tools for Node.js code execution
+- Agentic mode for advanced AI interactions
+- Real-time code execution in visible terminals
 
-## Requirements
+### 🚀 Modern Development Environment
+- **LazyVim** base configuration for VS Code-like experience
+- Enhanced terminal management with ToggleTerm
+- Neo-tree file explorer with Git integration
+- Package.json management with real-time updates
+- REST client for API testing
 
-- Ubuntu 24.04 LTS (or compatible system)
-- Git
-- Node.js LTS
-- Rust (for compiling avante.nvim)
-- OpenRouter API key
+### 📦 Node.js Development Tools
+- TypeScript/JavaScript enhanced support
+- NPM package management
+- Node.js REPL integration
+- Specialized terminals for different tasks
+- LSP support with Mason
+
+### 🎨 Beautiful Interface
+- Modern UI with clean design
+- Git status indicators
+- Syntax highlighting with Treesitter
+- Customizable themes and layouts
+- Smooth panel transitions
 
 ## Project Structure
 
 ```
-├── .gitignore                   # Git ignore patterns
-├── install.sh                  # Automated installation script
-├── README.md                   # Project documentation
-└── .config/
-    └── nvim/
-        ├── init.lua            # Main configuration
-        └── lua/
-            ├── config/
-            │   └── lazy.lua    # Plugin manager configuration
-            └── plugins/
-                ├── avante.lua      # AI assistant configuration
-                ├── lsp.lua         # LSP configuration
-                ├── cmp.lua         # Autocompletion setup
-                ├── treesitter.lua  # Syntax highlighting
-                ├── nvim-tree.lua   # File manager
-                ├── telescope.lua   # File search
-                ├── gitsigns.lua    # Git integration
-                ├── lualine.lua     # Status line
-                └── toggleterm.lua  # Terminal management
+.config/nvim/
+├── init.lua                    # Main configuration entry point
+├── lua/
+│   ├── config/
+│   │   ├── autocmds.lua       # Auto commands
+│   │   ├── keymaps.lua        # Key mappings
+│   │   ├── lazy.lua           # Lazy.nvim plugin manager setup
+│   │   └── options.lua        # NeoVim options
+│   └── plugins/
+│       ├── avante.lua         # AI assistant configuration
+│       └── nodejs.lua         # Node.js development plugins
+├── .gitignore                 # LazyVim gitignore
+├── .neoconf.json             # Project-specific settings
+└── stylua.toml               # Lua formatter configuration
 ```
 
-## Getting Started
+## Installation
 
-### 1. Clone Repository
+### Prerequisites
 
-```bash
-git clone https://github.com/hashfoundry/nvim-setup.git ~/neovim-config
-cd ~/neovim-config
+- NeoVim 0.9.0+
+- Node.js 18+
+- Git
+- A terminal with true color support
+- OpenRouter API key
+
+### Quick Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/hashfoundry/nvim-setup.git
+   cd nvim-setup
+   ```
+
+2. **Install on Ubuntu Server:**
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
+
+3. **Manual installation:**
+   ```bash
+   # Backup existing config
+   mv ~/.config/nvim ~/.config/nvim.backup
+
+   # Copy configuration
+   cp -r .config/nvim ~/.config/
+
+   # Set OpenRouter API key
+   export OPENROUTER_API_KEY="your-api-key-here"
+   ```
+
+4. **First launch:**
+   ```bash
+   nvim
+   ```
+   LazyVim will automatically install all plugins on first launch.
+
+## Configuration
+
+### OpenRouter API Setup
+
+1. Get your API key from [OpenRouter](https://openrouter.ai/)
+2. Set the environment variable:
+   ```bash
+   export OPENROUTER_API_KEY="your-api-key-here"
+   ```
+3. Add to your shell profile for persistence:
+   ```bash
+   echo 'export OPENROUTER_API_KEY="your-api-key-here"' >> ~/.bashrc
+   ```
+
+### Key Mappings
+
+#### AI Assistant (Avante)
+- `<leader>aa` - Ask AI assistant
+- `<leader>ar` - Refresh AI response
+- `<leader>ae` - Edit with AI
+- `<leader>at` - Toggle AI sidebar
+
+#### File Management
+- `<leader>e` - Toggle Neo-tree file explorer
+- `<leader>o` - Focus Neo-tree
+- `<leader>ff` - Find files (Telescope)
+- `<leader>fg` - Live grep (Telescope)
+
+#### Terminal Management
+- `<C-\>` - Toggle floating terminal
+- `<leader>tn` - Toggle Node.js REPL
+- `<leader>tp` - Toggle NPM terminal
+
+#### Package Management
+- `<leader>ns` - Show package info
+- `<leader>nt` - Toggle package info
+- `<leader>nu` - Update package
+- `<leader>ni` - Install package
+
+#### REST Client
+- `<leader>rr` - Run REST request
+- `<leader>rp` - Preview REST request
+- `<leader>rl` - Run last REST request
+
+## Usage Examples
+
+### AI-Assisted Development
+
+1. **Ask AI for help:**
+   - Select code and press `<leader>aa`
+   - Type your question or request
+   - AI will analyze and provide suggestions
+
+2. **Execute Node.js code:**
+   - AI can run code snippets directly in terminal
+   - Results appear in visible terminal window
+   - Supports npm commands and file execution
+
+### Node.js Development
+
+1. **Package management:**
+   - Open package.json
+   - Use `<leader>ns` to see package information
+   - Use `<leader>nu` to update packages
+
+2. **Terminal workflows:**
+   - `<leader>tn` for Node.js REPL
+   - `<leader>tp` for NPM commands
+   - `<C-\>` for general terminal
+
+### REST API Testing
+
+1. **Create .http files:**
+   ```http
+   GET https://api.example.com/users
+   Content-Type: application/json
+
+   ###
+
+   POST https://api.example.com/users
+   Content-Type: application/json
+
+   {
+     "name": "John Doe",
+     "email": "john@example.com"
+   }
+   ```
+
+2. **Execute requests:**
+   - Place cursor on request
+   - Press `<leader>rr` to execute
+
+## Customization
+
+### Adding New Plugins
+
+Create new files in `lua/plugins/` directory:
+
+```lua
+-- lua/plugins/my-plugin.lua
+return {
+  "author/plugin-name",
+  opts = {
+    -- plugin configuration
+  },
+  config = function(_, opts)
+    require("plugin-name").setup(opts)
+  end,
+}
 ```
 
-### 2. Set Up API Key
+### Modifying AI Configuration
 
-```bash
-echo 'export OPENAI_API_KEY="your_openrouter_api_key"' >> ~/.bashrc
-source ~/.bashrc
+Edit `lua/plugins/avante.lua` to:
+- Change AI model
+- Add custom tools
+- Modify UI settings
+- Update key mappings
+
+### Theme Customization
+
+LazyVim comes with multiple themes. Change in `lua/config/options.lua`:
+
+```lua
+vim.cmd.colorscheme("tokyonight")
+-- or
+vim.cmd.colorscheme("catppuccin")
 ```
-**Replace `your_openrouter_api_key` with your actual OpenRouter API key!**
-
-## Quick Installation
-
-### 1. Run Installation Script
-
-```bash
-chmod +x install.sh
-./install.sh
-```
-
-### 2. First Launch
-
-```bash
-nvim
-```
-Plugins will install automatically on first launch.
-
-## Manual Installation
-
-### Step 1: Update System
-
-```bash
-sudo apt update && sudo apt upgrade -y
-```
-
-### Step 2: Install Dependencies
-
-```bash
-sudo apt install -y curl wget git build-essential unzip software-properties-common
-```
-
-### Step 3: Install Node.js
-
-```bash
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-### Step 4: Install NeoVim
-
-```bash
-wget https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-sudo tar -xzf nvim-linux-x86_64.tar.gz -C /opt/
-sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
-```
-
-### Step 5: Install Rust (required for avante.nvim)
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-source ~/.cargo/env
-```
-
-### Step 6: Install LSP Servers
-
-```bash
-npm install -g typescript-language-server @vtsls/language-server eslint_d prettier
-```
-
-### Step 7: Copy Configuration
-
-```bash
-cp -r .config ~/.config
-```
-
-### Step 8: First Launch
-
-```bash
-nvim
-```
-Plugins will install automatically on first launch.
-
-## Key Bindings
-
-### AI Assistant (Avante)
-- `<Space>aa` - Ask AI
-- `<Space>at` - Toggle AI sidebar
-- `<Space>ar` - Refresh AI
-- `<Space>ae` - Edit with AI
-- `:AvanteAsk` - AI ask command
-
-### LSP
-- `gd` - Go to definition
-- `K` - Show documentation
-- `<Space>vca` - Code actions
-- `<Space>vrn` - Rename
-- `<Space>f` - Format code
-- `[d` / `]d` - Navigate diagnostics
-
-### File Manager
-- `<Space>e` - Toggle file manager
-
-### Search (Telescope)
-- `<Space>ff` - Find files
-- `<Space>fg` - Live grep
-- `<Space>fb` - Find buffers
-- `<Space>fh` - Help tags
-
-### Terminal (ToggleTerm)
-- `<C-\>` - Toggle terminal
-- `<Space>tn` - New terminal
-- `<Space>tf` - Float terminal
-
-### General
-- `<Space>` - Leader key
-- `<C-d>` / `<C-u>` - Scroll with centering
-- `J` / `K` (visual mode) - Move lines
-
-## Usage
-
-### AI Assistant Features
-- **Code Analysis**: Ask questions about your code
-- **Code Generation**: Generate code snippets and functions
-- **Debugging Help**: Get assistance with debugging
-- **Code Review**: Get suggestions for code improvements
-- **Documentation**: Generate documentation for your code
-
-### Development Workflow
-1. Open NeoVim in your project directory
-2. Use `<Space>e` to browse files
-3. Use `<Space>ff` to quickly find files
-4. Use `<Space>aa` to ask AI for help
-5. Use LSP features for code navigation and completion
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Plugins not installing**: Run `:Lazy sync` in NeoVim
-2. **LSP not working**: Check if language servers are installed with `:Mason`
-3. **AI not responding**: Verify your OpenRouter API key is set correctly
-4. **Rust compilation errors**: Ensure Rust is properly installed and updated
+1. **AI Assistant not working:**
+   - Check OpenRouter API key is set
+   - Verify internet connection
+   - Check `:checkhealth avante`
 
-### Getting Help
+2. **Plugins not loading:**
+   - Run `:Lazy sync` to update plugins
+   - Check `:Lazy health` for issues
+   - Restart NeoVim
 
-- Use `:checkhealth` in NeoVim to diagnose issues
-- Check plugin documentation with `:help <plugin-name>`
-- Review logs in `~/.local/share/nvim/`
+3. **LSP not working:**
+   - Run `:Mason` to install language servers
+   - Check `:LspInfo` for status
+   - Verify Node.js is installed
+
+4. **Terminal issues:**
+   - Check shell configuration
+   - Verify terminal supports true colors
+   - Try different terminal direction
+
+### Performance Optimization
+
+1. **Disable unused features:**
+   ```lua
+   -- In lua/config/options.lua
+   vim.opt.backup = false
+   vim.opt.swapfile = false
+   ```
+
+2. **Lazy load plugins:**
+   ```lua
+   -- In plugin configurations
+   lazy = true,
+   event = "VeryLazy",
+   ```
+
+## Development Workflow
+
+### Typical Session
+
+1. **Start NeoVim:**
+   ```bash
+   nvim
+   ```
+
+2. **Open project:**
+   - `<leader>e` to open file explorer
+   - Navigate and open files
+
+3. **AI-assisted coding:**
+   - Select code, press `<leader>aa`
+   - Ask for improvements or explanations
+   - Let AI execute code snippets
+
+4. **Testing and debugging:**
+   - Use `<leader>tn` for Node.js REPL
+   - Test API endpoints with REST client
+   - Monitor with integrated terminal
+
+### Git Integration
+
+- Git status in file explorer
+- Git signs in editor
+- Use `:Git` commands or external terminal
 
 ## Contributing
 
@@ -211,4 +300,14 @@ Plugins will install automatically on first launch.
 
 ## License
 
-This configuration is provided as-is for educational and development purposes.
+This configuration is open source and available under the MIT License.
+
+## Support
+
+- Create issues on GitHub for bugs
+- Check LazyVim documentation for base features
+- Consult Avante.nvim docs for AI features
+
+---
+
+**Note:** This configuration is optimized for Node.js development but can be easily extended for other languages by adding appropriate plugins and LSP configurations.
