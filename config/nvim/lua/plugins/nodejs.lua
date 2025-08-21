@@ -151,11 +151,120 @@ return {
     end,
   },
 
-  -- AstroNvim Language Support Extras
-  { import = "astronvim.plugins.extras.lang.typescript" },
-  { import = "astronvim.plugins.extras.lang.json" },
-  { import = "astronvim.plugins.extras.formatting.prettier" },
-  { import = "astronvim.plugins.extras.linting.eslint" },
+  -- LSP Configuration for TypeScript/JavaScript
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
+    },
+    config = function()
+      require("mason").setup()
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "ts_ls", -- TypeScript/JavaScript LSP
+          "jsonls", -- JSON LSP
+          "eslint", -- ESLint LSP
+        },
+      })
+
+      local lspconfig = require("lspconfig")
+      
+      -- TypeScript/JavaScript LSP
+      lspconfig.ts_ls.setup({
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+          javascript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+        },
+      })
+
+      -- JSON LSP
+      lspconfig.jsonls.setup({
+        settings = {
+          json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
+          },
+        },
+      })
+
+      -- ESLint LSP
+      lspconfig.eslint.setup({
+        settings = {
+          workingDirectories = { mode = "auto" },
+        },
+      })
+    end,
+  },
+
+  -- JSON Schema Store
+  {
+    "b0o/schemastore.nvim",
+    lazy = true,
+  },
+
+  -- Prettier formatting
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        javascript = { "prettier" },
+        typescript = { "prettier" },
+        javascriptreact = { "prettier" },
+        typescriptreact = { "prettier" },
+        json = { "prettier" },
+        css = { "prettier" },
+        html = { "prettier" },
+        markdown = { "prettier" },
+      },
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+    },
+    config = function(_, opts)
+      require("conform").setup(opts)
+      
+      -- Key mapping for manual formatting
+      vim.keymap.set({ "n", "v" }, "<leader>cf", function()
+        require("conform").format({ lsp_fallback = true })
+      end, { desc = "Format buffer" })
+    end,
+  },
+
+  -- Mason tool installer for formatters and linters
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    opts = {
+      ensure_installed = {
+        "prettier", -- Formatter
+        "eslint_d", -- ESLint daemon for faster linting
+        "typescript-language-server", -- TypeScript LSP
+        "json-lsp", -- JSON LSP
+      },
+    },
+  },
 
   -- Enhanced Neo-tree configuration for Node.js projects
   {
