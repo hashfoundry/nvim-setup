@@ -8,12 +8,16 @@ return {
   opts = {
     provider = "openai",
     auto_suggestions_provider = "openai",
-    openai = {
-      endpoint = "https://openrouter.ai/api/v1",
-      model = "anthropic/claude-3.5-sonnet-20241022",
-      timeout = 30000,
-      temperature = 0,
-      max_tokens = 4096,
+    providers = {
+      openai = {
+        endpoint = "https://openrouter.ai/api/v1",
+        model = "anthropic/claude-3-5-sonnet-20241022",
+        timeout = 30000,
+        max_tokens = 4096,
+        extra_request_body = {
+          temperature = 0,
+        },
+      },
     },
     behaviour = {
       auto_suggestions = false,
